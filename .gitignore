@@ -7,3 +7,5 @@ models/*.h5
 mlruns/
 
 .env
+
+mlflow.db

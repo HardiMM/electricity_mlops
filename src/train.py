@@ -3,6 +3,8 @@ import sys
 import numpy as np
 import pandas as pd
 import tensorflow as tf
+import mlflow
+import mlflow.tensorflow
 
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
@@ -38,6 +40,8 @@ EXPERIMENTS = {
     }
 }
 
+mlflow.set_experiment("Electricity_LSTM_Experiments")
+
 config = EXPERIMENTS[EXPERIMENT_NAME]
 
 print("=" * 60)
@@ -46,6 +50,17 @@ print("=" * 60)
 
 print("Configuration:")
 print(config)
+
+mlflow.start_run(run_name=EXPERIMENT_NAME)
+
+mlflow.log_params({
+    "lstm_1": config["lstm_1"],
+    "lstm_2": config["lstm_2"],
+    "dropout": config["dropout"],
+    "lookback": 30,
+    "batch_size": 32,
+    "epochs": 100
+})
 
 
 # ============================================================
@@ -414,6 +429,12 @@ metrics.to_csv(
     index=False
 )
 
+mlflow.log_metrics({
+    "MAE": float(mae),
+    "RMSE": float(rmse),
+    "MAPE": float(mape),
+    "R2": float(r2)
+})
 
 # ============================================================
 # 15. SAVE MODEL
@@ -426,6 +447,10 @@ model_path = os.path.join(
 
 model.save(model_path)
 
+mlflow.tensorflow.log_model(
+    model,
+    "model"
+)
 
 # ============================================================
 # 16. DISPLAY RESULTS
@@ -448,3 +473,5 @@ print("\nMetrics saved to:")
 print(metrics_path)
 
 print("\nExperiment completed successfully.")
+
+mlflow.end_run()
