@@ -2,10 +2,9 @@ __pycache__/
 *.pyc
 
 models/*.keras
-models/*.h5
+models/best_model.keras
 
 mlruns/
+mlflow.db
 
 .env
-
-mlflow.db
