@@ -1,0 +1,36 @@
+name: Electricity MLOps CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          pip install --upgrade pip
+          pip install fastapi uvicorn numpy pydantic
+
+      - name: Check Python files
+        run: |
+          python -m py_compile app/main.py
+          python -m py_compile src/train.py
+          python -m py_compile src/select_best_model.py
+
+      - name: CI completed
+        run: echo "CI pipeline completed successfully"
