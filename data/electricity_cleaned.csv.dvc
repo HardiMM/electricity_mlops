@@ -1,0 +1,5 @@
+outs:
+- md5: ca74abe78a9a4428d674106e408ad7d1
+  size: 956418
+  hash: md5
+  path: electricity_cleaned.csv
